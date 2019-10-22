@@ -10,26 +10,22 @@
 #                                                                              #
 # **************************************************************************** #
 
-def validate_alphabet(alphabet):
+import turing_classes
 
-	i = 0
-	while i < len(alphabet):
-		if len(alphabet[i]) > 1:
-			return 1
-		i = i + 1
-	return 0
+def 	get_transition_actions(transitions, current_state):
 
-def validate_character(char, string):
-		i = 0
-		x = 0
-		while i < len(string):
-			j = 0
-			while j < len(char):
-				if string[i] == char[j]:					
-					x = x + 1
-				j = j + 1
-			i = i + 1
-		if x != len(string):
-			return (1)
-		else:
-			return (0)
+	for key,value in transitions.items():
+		if key == current_state:
+			return turing_classes.Transitions(key, value)
+
+def		movement(action, index):
+	if action == "LEFT":
+		index = index - 1
+	if action == "RIGHT":
+		index = index + 1
+	return index
+
+def		swap_characters(string, index, character):
+	
+	new = string[:index] + character + string[index + 1:]
+	return(new)

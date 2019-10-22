@@ -12,35 +12,36 @@
 #                                                                              #
 # **************************************************************************** #
 
-import json
 import sys
-from turingmachine import TuringMachine
-from turingmachine import process
+import turing_classes
+import print_functions
+import utils
+from validate_input import validate_input
 
-def validate_input():
-	
-	json_file = sys.argv[1]
-	if len(sys.argv) > 3:
-			print("To many Arguments")
+def		process(machine, input):
+
+	i = 0
+	current_state = machine.initial
+	transitions = machine.transitions
+
+	print_functions.print_header(machine.name)
+	print_functions.print_machine(machine)
+	while current_state != machine.final:
+		transit = utils.get_transition_actions(transitions, current_state)
+		if current_state == machine.final[0]:
 			exit()
-	#if len(sys.argv) == 1
-
-	while True:
-		try:
-			with open(json_file) as f:
-				data = json.load(f)
-		except:
-			json_file = input("Incorrect json format or incorrect file\n"
-							"Please re-enter a valid json Path\n json Path : ")
-		else:
-			data = TuringMachine(data)
-			break
-	data.alpa_test(sys.argv[2])
-	return data
-			
+		for actions in transit.actions:
+			if actions["read"] == input[i] and transit.transition == current_state:
+				print_functions.print_tape(current_state, input, actions)
+				input = utils.swap_characters(input, i, actions["write"])
+				i = utils.movement(actions["action"], i)
+				current_state = actions["to_state"]
+				if i < 0:
+					print("\nError: This Turing machine only works in one"
+					"direction.")
+					exit()
 
 if __name__ == "__main__":
 	data = validate_input()
 	process(data, sys.argv[2])
-	pass
 
